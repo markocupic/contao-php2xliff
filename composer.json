@@ -1,0 +1,51 @@
+{
+    "name": "markocupic/contao-php2xliff",
+    "description": "Create XLIFF files from contao php language files",
+    "keywords": [
+        "contao",
+        "translation",
+        "xliff converter",
+        "xlf converter"
+    ],
+    "type": "contao-bundle",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Marko Cupic",
+            "email": "m.cupic@gmx.ch",
+            "homepage": "https://github.com/markocupic/contao-php2xliff",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/markocupic/contao-php2xliff/issues",
+        "source": "https://github.com/markocupic/contao-php2xliff"
+    },
+    "require": {
+        "php": "^7.4||^8.0",
+        "contao/core-bundle": "^4.12",
+        "codefog/contao-haste": "^4.20"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.3",
+        "contao/test-case": "^4.0",
+        "phpunit/phpunit": "^8.4",
+        "symfony/http-client": "4.4.*",
+        "symfony/phpunit-bridge": "4.4.*",
+        "contao/easy-coding-standard": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Markocupic\\ContaoPhp2Xliff\\": "src/"
+        },
+        "exclude-from-classmap": [
+            "src/Resources/contao/config",
+            "src/Resources/contao/dca",
+            "src/Resources/contao/languages"
+        ]
+    },
+    "extra": {
+        "contao-manager-plugin": "Markocupic\\ContaoPhp2Xliff\\ContaoManager\\Plugin"
+    },
+    "version": "1.0"
+}

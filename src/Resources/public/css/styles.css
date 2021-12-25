@@ -1,0 +1,7 @@
+/**
+ * Operations
+ */
+[data-icon="op-icon"] > img {
+    width: 16px !important;
+    height: 16px !important;
+}

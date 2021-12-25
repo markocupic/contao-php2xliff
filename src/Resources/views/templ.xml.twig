@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<xliff version="1.1">
+  <file datatype="php" original="{{ original }}" source-language="{{ source_lang }}"{% if target_lang %} target-language="{{ target_lang }}"{% endif %}>
+    <body>
+{% for item in items %}
+      <trans-unit id="{{ item.id }}">
+        <source>{{ item.source }}</source>
+{% if item.target %}
+        <target>{{ item.target }}</target>
+{% endif %}
+      </trans-unit>
+{% endfor %}
+    </body>
+  </file>
+</xliff>
