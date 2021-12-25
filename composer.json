@@ -46,6 +46,5 @@
     },
     "extra": {
         "contao-manager-plugin": "Markocupic\\ContaoPhp2Xliff\\ContaoManager\\Plugin"
-    },
-    "version": "1.0"
+    }
 }
