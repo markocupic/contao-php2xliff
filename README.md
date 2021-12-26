@@ -18,9 +18,26 @@ markocupic_contao_php2xliff:
   sourceLanguage: it # Switch the source language to Italian
 ```
 
-#Transifex hints
-Navigate to the repsitory root `cd vendor/vendorname/bundlename`
-Init transifex `tx init`. Transifex will create a config file in `vendor/vendorname/bundlename/.tx`
+# Transifex hints
+
+### Install
+Navigate to your project root. Then run:
+```
+git clone http://code.transifex.com/transifex-client
+cd transifex-client
+py setup.py install
+```
+Navigate to newly created transifex-client directory and install [transifex-client](https://docs.transifex.com/client/installing-the-client#installing-the-client-from-source).
+```
+cd transifex-client
+py setup.py install
+```
+
+
+### Initialize and config
+
+Navigate to the repository root e.g. `cd vendor/vendorname/bundlename`
+Init transifex `tx init`. Transifex will create a basic config file in `vendor/vendorname/bundlename/.tx`
 Edit the config file and add entries for each translation file.
 
 Use `markocupic/contao-php2xliff` to generate xliff translation files from Contao PHP array translation files.
