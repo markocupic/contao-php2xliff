@@ -61,8 +61,8 @@ class XliffFromPhp
         $this->sourceLangArray = $parser->getFromFile($sourceLangFile);
 
         $this->generateSourceFile($this->getSourceFileContent());
-        $this->generateTarget($this->getTargetFileContent());
-        //die($this->targetLangFile->path);
+        $this->generateTargetFile($this->getTargetFileContent());
+        
         Message::addInfo(
             sprintf(
                 'Generated the %s .xlf version of %s and wrote it to "%s".',
@@ -130,11 +130,9 @@ class XliffFromPhp
     }
 
     /**
-     * @param $strContent
-     *
      * @throws \Exception
      */
-    private function generateSourceFile($strContent): void
+    private function generateSourceFile(string $strContent): void
     {
         $strNewPath = \dirname($this->sourceLangFile->path).'/'.$this->sourceLangFile->filename.'.xlf';
 
@@ -145,11 +143,9 @@ class XliffFromPhp
     }
 
     /**
-     * @param $strContent
-     *
      * @throws \Exception
      */
-    private function generateTarget($strContent): void
+    private function generateTargetFile(string $strContent): void
     {
         $strNewPath = \dirname($this->targetLangFile->path).'/'.$this->targetLangFile->filename.'.xlf';
 
