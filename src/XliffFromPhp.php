@@ -26,7 +26,7 @@ use Twig\Error\SyntaxError;
 class XliffFromPhp
 {
     private TwigEnvironment $twig;
-
+    private string $php2XliffSourceLang;
     private ?array $targetLangArray;
     private ?array $sourceLangArray;
     private ?File $sourceLangFile;
@@ -34,9 +34,10 @@ class XliffFromPhp
     private ?string $sourceLang;
     private ?string $targetLang;
 
-    public function __construct(TwigEnvironment $twig)
+    public function __construct(TwigEnvironment $twig, string $php2XliffSourceLang)
     {
         $this->twig = $twig;
+        $this->php2XliffSourceLang = $php2XliffSourceLang;
     }
 
     /**
@@ -61,14 +62,18 @@ class XliffFromPhp
         $this->sourceLangArray = $parser->getFromFile($sourceLangFile);
 
         $this->generateSourceFile($this->getSourceFileContent());
-        $this->generateTarget($this->getTargetFileContent());
-        //die($this->targetLangFile->path);
+
+        if ($targetLang !== $this->php2XliffSourceLang) {
+            // Do not generate the target tag if target language is the source language
+            $this->generateTarget($this->getTargetFileContent());
+        }
+
         Message::addInfo(
             sprintf(
                 'Generated the %s .xlf version of %s and wrote it to "%s".',
-                $this->targetLangArray,
+                $this->targetLang,
                 $this->targetLangFile->path,
-                \dirname((string) $this->targetLangFile->path),
+                \dirname($this->targetLangFile->path),
             )
         );
     }

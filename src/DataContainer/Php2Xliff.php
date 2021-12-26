@@ -17,7 +17,6 @@ namespace Markocupic\ContaoPhp2Xliff\DataContainer;
 use Contao\Controller;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
-use Contao\Environment;
 use Contao\File;
 use Contao\Message;
 use Haste\Util\Url;
@@ -141,12 +140,11 @@ class Php2Xliff
                             foreach ($finder as $folder) {
                                 $basename = $folder->getBasename();
 
-                                // Do not list the source language
                                 if ($basename === $this->php2XliffSourceLang) {
-                                    continue;
+                                    $arrOptions[$basename] = $basename.' (source)';
+                                } else {
+                                    $arrOptions[$basename] = $basename;
                                 }
-
-                                $arrOptions[$basename] = $basename;
                             }
                         }
                     }
