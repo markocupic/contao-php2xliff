@@ -101,7 +101,6 @@ $GLOBALS['TL_DCA']['tl_php2xliff'] = [
         'targetLanguage' => [
             'inputType' => 'select',
             'exclude'   => true,
-            'reference' => $GLOBALS['TL_LANG']['tl_php2xliff'],
             'eval'      => ['includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
