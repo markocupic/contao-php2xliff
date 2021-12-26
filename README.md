@@ -1,6 +1,6 @@
 <p align="center"><a href="https://github.com/markocupic"><img src="docs/logo.png" width="200"></a></p>
 
-# Welcome to Contao PHP language file to XLIFF
+# Generate XLIFF translation files from PHP array translation files
 This little handy extension simply converts contao php translation files into their xliff (*.xlf) pendants.
  The newly generated files will be stored side by side to the already existing php files.
  Already existing *.xlf files will be overwritten.
