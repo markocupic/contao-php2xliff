@@ -1,6 +1,6 @@
 <p align="center"><a href="https://github.com/markocupic"><img src="docs/logo.png" width="200"></a></p>
 
-# Generate XLIFF translation files from PHP array translation files
+# Generate "XLIFF translation files" from "PHP array translation files"
 This little handy Contao backend extension simply converts contao php translation files into their xliff (*.xlf) pendants.
  The newly generated files will be stored side by side to the already existing php files.
  Already existing *.xlf files will be overwritten.
@@ -9,8 +9,8 @@ This little handy Contao backend extension simply converts contao php translatio
 ![Backend](docs/screenshot_backend_1.png)
 
 # Changing the source language
-The source language for all Contao Core XLIFF files is english (en).
- If you like to change this setting you have to do that in your project config in `config/config.yml`.
+The source language for all Contao Core XLIFF files is English (en).
+ If you like to change this setting you have to do this in your project config in `config/config.yml`.
 
 ```yaml
 # config/config.yml
@@ -24,8 +24,6 @@ markocupic_contao_php2xliff:
 Navigate to your project root. Then run:
 ```
 git clone http://code.transifex.com/transifex-client
-cd transifex-client
-py setup.py install
 ```
 Navigate to newly created transifex-client directory and install [transifex-client](https://docs.transifex.com/client/installing-the-client#installing-the-client-from-source).
 ```
