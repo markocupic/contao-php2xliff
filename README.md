@@ -42,19 +42,17 @@ Use `markocupic/contao-php2xliff` to generate xliff translation files from Conta
 
 ### Push
 
-Upload/Update source files: `tx push -s`
+Upload/Update source files (force overriding): `tx push -s -f`
 
-Upload/Update translations files: `tx push -t`
+Upload/Update translations files (force overriding): `tx push -t -f`
 
-Or upload/update both: `tx push -s -t`
-
-Upload/Update translations files and **force upload**: `tx push -t -f`
+Or upload/update both (force overriding): `tx push -s -t -f`
 
 [Transifex Push Documentation](https://docs.transifex.com/client/push)
 
 ### Pull
-Pull source files (force overriding): `tx pull -s -f`
+Pull source and translation files (force overriding): `tx pull -s -f`
 
-Pull translation files (force overriding): `tx pull -t -f`
+Pull translation files only (force overriding): `tx pull -t -f`
 
 [Transifex Pull Documentation](https://docs.transifex.com/client/pull)
