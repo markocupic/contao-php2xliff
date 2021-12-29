@@ -56,52 +56,57 @@ class Php2Xliff
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if ('convertphp2xliff' === $request->query->get('key')) {
-            if (null !== ($php2xliffModel = Php2xliffModel::findByPk($dc->id))) {
-                $targetLang = $php2xliffModel->targetLanguage;
+        if ('convertphp2xliff' !== $request->query->get('key')) {
+            return;
+        }
 
-                if ('' !== $php2xliffModel->languagePath && '' !== $targetLang) {
-                    $path = sprintf(
-                        '%s/%s/%s',
-                        $this->projectDir,
-                        $php2xliffModel->languagePath,
+        if (null === ($php2xliffModel = Php2xliffModel::findByPk($dc->id))) {
+            return;
+        }
+
+        $targetLang = $php2xliffModel->targetLanguage;
+
+        if ('' === $php2xliffModel->languagePath || '' === $targetLang) {
+            return;
+        }
+        $path = sprintf(
+            '%s/%s/%s',
+            $this->projectDir,
+            $php2xliffModel->languagePath,
+            $targetLang,
+        );
+
+        // Search for php translation files in vendor/vendorname/bundlename/src/Resources/contao/languages
+        $finder = new Finder();
+        $finder->in($path)->depth(0)->files()->name('*.php');
+
+        if (!$finder->hasResults()) {
+            Message::addInfo($this->translator->trans('CONVERT_PHP_2_XLIFF.noPHPLangFilesFound', [], 'contao_default'));
+        }
+
+        foreach ($finder as $targetLangFile) {
+            $targetLangFileBasename = $targetLangFile->getBasename();
+            $sourceLangFilePath = \dirname($targetLangFile->getRealPath(), 2).'/'.$this->php2XliffSourceLang.'/'.$targetLangFileBasename;
+
+            if (!is_file($sourceLangFilePath)) {
+                Message::addError(
+                    $this->translator->trans('CONVERT_PHP_2_XLIFF.sourceLangFileMissing', [
                         $targetLang,
-                    );
-
-                    // Search for php translation files in vendor/vendorname/bundlename/src/Resources/contao/languages
-                    $finder = new Finder();
-                    $finder->in($path)->depth(0)->files()->name('*.php');
-
-                    if ($finder->hasResults()) {
-                        foreach ($finder as $targetLangFile) {
-                            $targetLangFileBasename = $targetLangFile->getBasename();
-                            $sourceLangFilePath = \dirname($targetLangFile->getRealPath(), 2).'/'.$this->php2XliffSourceLang.'/'.$targetLangFileBasename;
-
-                            if (!is_file($sourceLangFilePath)) {
-                                Message::addError(
-                                    $this->translator->trans('CONVERT_PHP_2_XLIFF.sourceLangFileMissing', [
-                                        $targetLang,
-                                        $targetLangFileBasename,
-                                        str_replace($this->projectDir.'/', '', $sourceLangFilePath),
-                                    ], 'contao_default')
-                                );
-                                continue;
-                            }
-
-                            $targetLangFile = new File(str_replace($this->projectDir.'/', '', $targetLangFile->getRealPath()));
-                            $sourceLangFile = new File(str_replace($this->projectDir.'/', '', $sourceLangFilePath));
-
-                            $this->xliffFromPhp->generate($this->php2XliffSourceLang, $sourceLangFile, $targetLang, $targetLangFile, (bool) $php2xliffModel->regenerateSourceTransFile);
-                        }
-                    } else {
-                        Message::addInfo($this->translator->trans('CONVERT_PHP_2_XLIFF.noPHPLangFilesFound', [], 'contao_default'));
-                    }
-                }
+                        $targetLangFileBasename,
+                        str_replace($this->projectDir.'/', '', $sourceLangFilePath),
+                    ], 'contao_default')
+                );
+                continue;
             }
 
-            $href = Url::removeQueryString(['key']);
-            Controller::redirect($href);
+            $targetLangFile = new File(str_replace($this->projectDir.'/', '', $targetLangFile->getRealPath()));
+            $sourceLangFile = new File(str_replace($this->projectDir.'/', '', $sourceLangFilePath));
+
+            $this->xliffFromPhp->generate($this->php2XliffSourceLang, $sourceLangFile, $targetLang, $targetLangFile, (bool) $php2xliffModel->regenerateSourceTransFile);
         }
+
+        $href = Url::removeQueryString(['key']);
+        Controller::redirect($href);
     }
 
     /**
@@ -144,7 +149,8 @@ class Php2Xliff
         // Search for language folders
         $finder = new Finder();
         $finder->in($this->projectDir.'/'.$path)
-            ->directories();
+            ->directories()
+        ;
 
         if (!$finder->hasResults()) {
             return [];
