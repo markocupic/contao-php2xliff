@@ -69,6 +69,7 @@ class Php2Xliff
         if ('' === $php2xliffModel->languagePath || '' === $targetLang) {
             return;
         }
+        
         $path = sprintf(
             '%s/%s/%s',
             $this->projectDir,
