@@ -24,6 +24,7 @@ class ContaoXliffTransFileWriter implements WriterInterface
     protected string $originalFilePath;
     protected string $targetFilePath;
     protected array $arrTranslations;
+
     public function __construct(string $sourceLanguage, string $targetLanguage, string $originalFilePath, string $targetFilePath, array $arrSourceLangTranslations, array $arrTargetLangTranslations)
     {
         $this->sourceLanguage = $sourceLanguage;
@@ -49,21 +50,33 @@ class ContaoXliffTransFileWriter implements WriterInterface
 
         // Add translation items
         foreach (array_keys($this->arrSourceLangTranslations) as $translationId) {
-            // Do not add empty or unsetted values
-            if (isset($this->arrSourceLangTranslations[$translationId])) {
-                if ('' !== $this->arrSourceLangTranslations[$translationId]) {
-                    if (isset($this->arrTargetLangTranslations[$translationId])) {
-                        if ('' !== $this->arrTargetLangTranslations[$translationId]) {
-                            $valueSource = $this->arrSourceLangTranslations[$translationId];
-                            $valueTarget = $this->arrTargetLangTranslations[$translationId];
 
-                            // Append item
-                            $bodyNode->appendChild($this->createTranslationNode($dom, $translationId, $valueSource, $valueTarget));
-                            ++$intAppendedItems;
-                        }
-                    }
-                }
+            // Do not add empty or unsetted values
+            if (!isset($this->arrSourceLangTranslations[$translationId])) {
+                continue;
             }
+
+            if ('' === trim((string)$this->arrSourceLangTranslations[$translationId])) {
+                continue;
+            }
+
+            if (!isset($this->arrTargetLangTranslations[$translationId])) {
+                continue;
+            }
+
+            if ('' !== trim((string) $this->arrTargetLangTranslations[$translationId])) {
+                continue;
+            }
+
+            // Get the source translation slug
+            $valueSource = $this->arrSourceLangTranslations[$translationId];
+
+            // Get the target translation slug
+            $valueTarget = $this->arrTargetLangTranslations[$translationId];
+
+            // Append item
+            $bodyNode->appendChild($this->createTranslationNode($dom, $translationId, $valueSource, $valueTarget));
+            ++$intAppendedItems;
         }
 
         $bytes = false;
@@ -101,6 +114,7 @@ class ContaoXliffTransFileWriter implements WriterInterface
         $fileNode->appendChild(new \DOMAttr('datatype', self::FILE_DATATYPE));
         $fileNode->appendChild(new \DOMAttr('original', $this->originalFilePath));
         $fileNode->appendChild(new \DOMAttr('target-language', $this->targetLanguage));
+
         return $fileNode->appendChild($dom->createElement('body'));
     }
 

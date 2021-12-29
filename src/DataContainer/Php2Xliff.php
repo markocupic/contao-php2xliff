@@ -26,7 +26,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-
 class Php2Xliff
 {
     private RequestStack $requestStack;
@@ -80,11 +79,11 @@ class Php2Xliff
 
                             if (!is_file($sourceLangFilePath)) {
                                 Message::addError(
-                                    $this->translator->trans('CONVERT_PHP_2_XLIFF.sourceLangFileMissing',[
+                                    $this->translator->trans('CONVERT_PHP_2_XLIFF.sourceLangFileMissing', [
                                         $targetLang,
                                         $targetLangFileBasename,
-                                        str_replace($this->projectDir.'/','',     $sourceLangFilePath),
-                                    ],'contao_default')
+                                        str_replace($this->projectDir.'/', '', $sourceLangFilePath),
+                                    ], 'contao_default')
                                 );
                                 continue;
                             }
@@ -95,7 +94,7 @@ class Php2Xliff
                             $this->xliffFromPhp->generate($this->php2XliffSourceLang, $sourceLangFile, $targetLang, $targetLangFile, (bool) $php2xliffModel->regenerateSourceTransFile);
                         }
                     } else {
-                        Message::addInfo($this->translator->trans('CONVERT_PHP_2_XLIFF.noPHPLangFilesFound',[],'contao_default'));
+                        Message::addInfo($this->translator->trans('CONVERT_PHP_2_XLIFF.noPHPLangFilesFound', [], 'contao_default'));
                     }
                 }
             }
@@ -124,32 +123,40 @@ class Php2Xliff
     {
         $arrOptions = [];
 
-        if ($dc->id) {
-            if ('' !== $dc->activeRecord->path) {
-                if (null !== ($php2xliffModel = Php2xliffModel::findByPk($dc->id))) {
-                    if ('' !== $php2xliffModel->languagePath) {
-                        $path = rtrim($php2xliffModel->languagePath, '/');
+        if (!isset($dc->id)) {
+            return [];
+        }
 
-                        // Search for language folders
-                        $finder = new Finder();
-                        $finder
-                            ->in($this->projectDir.'/'.$path)
-                            ->directories()
-                        ;
+        if ('' === $dc->activeRecord->path) {
+            return [];
+        }
 
-                        if ($finder->hasResults()) {
-                            foreach ($finder as $folder) {
-                                $basename = $folder->getBasename();
+        if (null === ($php2xliffModel = Php2xliffModel::findByPk($dc->id))) {
+            return [];
+        }
 
-                                if ($basename === $this->php2XliffSourceLang) {
-                                    $arrOptions[$basename] = $basename.' (source)';
-                                } else {
-                                    $arrOptions[$basename] = $basename;
-                                }
-                            }
-                        }
-                    }
-                }
+        if ('' === $php2xliffModel->languagePath) {
+            return [];
+        }
+
+        $path = rtrim($php2xliffModel->languagePath, '/');
+
+        // Search for language folders
+        $finder = new Finder();
+        $finder->in($this->projectDir.'/'.$path)
+            ->directories();
+
+        if (!$finder->hasResults()) {
+            return [];
+        }
+
+        foreach ($finder as $folder) {
+            $basename = $folder->getBasename();
+
+            if ($basename === $this->php2XliffSourceLang) {
+                $arrOptions[$basename] = $basename.' (source)';
+            } else {
+                $arrOptions[$basename] = $basename;
             }
         }
 

@@ -107,6 +107,7 @@ class PhpParser
                 $result[implode('.', $keys)] = $leafValue;
             }
         }
+
         $this->dotKeyLangArray = $result;
 
         return $this;
