@@ -24,6 +24,8 @@ use Markocupic\ContaoPhp2Xliff\Model\Php2xliffModel;
 use Markocupic\ContaoPhp2Xliff\XliffFromPhp;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 
 class Php2Xliff
 {
@@ -35,10 +37,11 @@ class Php2Xliff
 
     private string $php2XliffSourceLang;
 
-    public function __construct(RequestStack $requestStack, XliffFromPhp $xliffFromPhp, string $projectDir, string $php2XliffSourceLang)
+    public function __construct(RequestStack $requestStack, XliffFromPhp $xliffFromPhp, TranslatorInterface $translator, string $projectDir, string $php2XliffSourceLang)
     {
         $this->requestStack = $requestStack;
         $this->xliffFromPhp = $xliffFromPhp;
+        $this->translator = $translator;
         $this->projectDir = $projectDir;
         $this->php2XliffSourceLang = $php2XliffSourceLang;
     }
@@ -47,6 +50,8 @@ class Php2Xliff
      * Onload callback.
      *
      * @Callback(table="tl_php2xliff", target="config.onload")
+     *
+     * @throws \Exception
      */
     public function onloadCallback(DataContainer $dc): void
     {
@@ -60,30 +65,26 @@ class Php2Xliff
                     $path = sprintf(
                         '%s/%s/%s',
                         $this->projectDir,
-                        rtrim($php2xliffModel->languagePath, '/'),
+                        $php2xliffModel->languagePath,
                         $targetLang,
                     );
 
+                    // Search for php translation files in vendor/vendorname/bundlename/src/Resources/contao/languages
                     $finder = new Finder();
                     $finder->in($path)->depth(0)->files()->name('*.php');
 
                     if ($finder->hasResults()) {
                         foreach ($finder as $targetLangFile) {
                             $targetLangFileBasename = $targetLangFile->getBasename();
-                            $sourceLangFilePath = \dirname($targetLangFile->getRealPath(), 2).'/en/'.$targetLangFileBasename;
+                            $sourceLangFilePath = \dirname($targetLangFile->getRealPath(), 2).'/'.$this->php2XliffSourceLang.'/'.$targetLangFileBasename;
 
                             if (!is_file($sourceLangFilePath)) {
                                 Message::addError(
-                                    sprintf(
-                                        'Skipped the %s translation of %s, because we cold not find the source lang file in "%s".',
+                                    $this->translator->trans('CONVERT_PHP_2_XLIFF.sourceLangFileMissing',[
                                         $targetLang,
                                         $targetLangFileBasename,
-                                        str_replace(
-                                            $this->projectDir.'/',
-                                            '',
-                                            $sourceLangFilePath
-                                        )
-                                    )
+                                        str_replace($this->projectDir.'/','',     $sourceLangFilePath),
+                                    ],'contao_default')
                                 );
                                 continue;
                             }
@@ -91,10 +92,10 @@ class Php2Xliff
                             $targetLangFile = new File(str_replace($this->projectDir.'/', '', $targetLangFile->getRealPath()));
                             $sourceLangFile = new File(str_replace($this->projectDir.'/', '', $sourceLangFilePath));
 
-                            $this->xliffFromPhp->generate($this->php2XliffSourceLang, $sourceLangFile, $targetLang, $targetLangFile);
+                            $this->xliffFromPhp->generate($this->php2XliffSourceLang, $sourceLangFile, $targetLang, $targetLangFile, (bool) $php2xliffModel->regenerateSourceTransFile);
                         }
                     } else {
-                        Message::addInfo('Did not find any php language files to convert to the xliff format. Please check your folder- and language settings.');
+                        Message::addInfo($this->translator->trans('CONVERT_PHP_2_XLIFF.noPHPLangFilesFound',[],'contao_default'));
                     }
                 }
             }
@@ -109,7 +110,7 @@ class Php2Xliff
      *
      * @Callback(table="tl_php2xliff", target="fields.sourceLanguage.load")
      */
-    public function sourceLanguageLoadCallback(string $varValue, DataContainer $dc)
+    public function sourceLanguageLoadCallback(string $varValue, DataContainer $dc): string
     {
         return $this->php2XliffSourceLang;
     }
@@ -119,7 +120,7 @@ class Php2Xliff
      *
      * @Callback(table="tl_php2xliff", target="fields.targetLanguage.options")
      */
-    public function targetLanguageOptionsCallback(DataContainer $dc)
+    public function targetLanguageOptionsCallback(DataContainer $dc): array
     {
         $arrOptions = [];
 

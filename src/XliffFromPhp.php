@@ -14,36 +14,36 @@ declare(strict_types=1);
 
 namespace Markocupic\ContaoPhp2Xliff;
 
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\File;
 use Contao\Message;
-use Contao\StringUtil;
 use Markocupic\ContaoPhp2Xliff\Parser\PhpParser;
-use Twig\Environment as TwigEnvironment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
+use Markocupic\ContaoPhp2Xliff\Writer\ContaoXliffTransFileWriter;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class XliffFromPhp
 {
-    private TwigEnvironment $twig;
-    private string $php2XliffSourceLang;
-    private ?array $targetLangArray;
-    private ?array $sourceLangArray;
+    private ContaoFramework $framework;
+    private TranslatorInterface $translator;
+    private string $projectDir;
+    private ?array $targetTransArray;
+    private ?array $sourceTransArray;
     private ?File $sourceLangFile;
     private ?File $targetLangFile;
     private ?string $sourceLang;
     private ?string $targetLang;
 
-    public function __construct(TwigEnvironment $twig, string $php2XliffSourceLang)
+    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, string $projectDir)
     {
-        $this->twig = $twig;
-        $this->php2XliffSourceLang = $php2XliffSourceLang;
+        $this->framework = $framework;
+        $this->translator = $translator;
+        $this->projectDir = $projectDir;
     }
 
     /**
      * @throws \Exception
      */
-    public function generate(string $sourceLang, File $sourceLangFile, string $targetLang, File $targetLangFile): void
+    public function generate(string $sourceLang, File $sourceLangFile, string $targetLang, File $targetLangFile, bool $regenerateSourceTransFile = false): void
     {
         if (isset($GLOBALS[PhpParser::PHP2XLIFF_LANG_KEY])) {
             unset($GLOBALS[PhpParser::PHP2XLIFF_LANG_KEY]);
@@ -55,112 +55,87 @@ class XliffFromPhp
         $this->sourceLang = $sourceLang;
         $this->targetLang = $targetLang;
 
+        // Get source translation from php lang file parser
         $parser = new PhpParser();
-        $this->targetLangArray = $parser->getFromFile($targetLangFile);
+        $this->sourceTransArray = $parser->getFromFile($sourceLangFile);
 
+        // Get target translation from php lang file parser
         $parser = new PhpParser();
-        $this->sourceLangArray = $parser->getFromFile($sourceLangFile);
+        $this->targetTransArray = $parser->getFromFile($targetLangFile);
 
-        $this->generateSourceFile($this->getSourceFileContent());
-
-        if ($targetLang !== $this->php2XliffSourceLang) {
-            // Do not generate the target tag if target language is the source language
-            $this->generateTarget($this->getTargetFileContent());
+        if ($regenerateSourceTransFile) {
+            $this->regenerateSourceFile();
         }
 
-        Message::addInfo(
-            sprintf(
-                'Generated the %s .xlf version of %s and wrote it to "%s".',
-                $this->targetLang,
-                $this->targetLangFile->path,
-                \dirname($this->targetLangFile->path),
-            )
-        );
+        $this->generateTargetFile();
     }
 
-    /**
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    private function getSourceFileContent(): string
+    protected function regenerateSourceFile(): void
     {
-        $items = [];
+        $sLang = $this->sourceLang;
+        $tLang = $this->sourceLang;
+        $origFilePath = $this->sourceLangFile->path;
+        $targetFilePath = $this->projectDir.'/'.$this->sourceLangFile->path;
+        $sTransArray = $this->sourceTransArray;
+        $tTransArray = $this->sourceTransArray;
 
-        foreach (array_keys($this->sourceLangArray) as $k) {
-            $items[] = [
-                'id' => $k,
-                'source' => isset($this->sourceLangArray[$k]) ? StringUtil::specialchars(StringUtil::restoreBasicEntities($this->sourceLangArray[$k])) : '',
-                'target' => null,
-            ];
+        $messageAdapter = $this->framework->getAdapter(Message::class);
+
+        if (new ContaoXliffTransFileWriter($sLang, $tLang, $origFilePath, $targetFilePath, $sTransArray, $tTransArray)) {
+            $strMsg = $this->translator->trans(
+                'CONVERT_PHP_2_XLIFF.regenerateSourceSuccess',
+                [
+                    $this->sourceLang,
+                    basename($this->sourceLangFile->path),
+                ],
+                'contao_default',
+            );
+            $messageAdapter->addInfo($strMsg);
+        } else {
+            $strMsg = $this->translator->trans(
+                'CONVERT_PHP_2_XLIFF.regenerateSourceFail',
+                [
+                    $this->sourceLang,
+                    basename($this->sourceLangFile->path),
+                ],
+                'contao_default',
+            );
+            $messageAdapter->addError($strMsg);
         }
-
-        return $this->twig->render(
-            '@MarkocupicContaoPhp2Xliff/templ.xml.twig',
-            [
-                'original' => $this->sourceLangFile->path,
-                'source_lang' => $this->sourceLang,
-                'target_lang' => null,
-                'items' => $items,
-            ]
-        );
     }
 
-    /**
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    private function getTargetFileContent(): string
-    {
-        $items = [];
 
-        foreach (array_keys($this->sourceLangArray) as $k) {
-            $items[] = [
-                'id' => $k,
-                'source' => isset($this->sourceLangArray[$k]) ? StringUtil::specialchars(StringUtil::restoreBasicEntities($this->sourceLangArray[$k])) : '',
-                'target' => isset($this->targetLangArray[$k]) ? StringUtil::specialchars(StringUtil::restoreBasicEntities($this->targetLangArray[$k])) : '',
-            ];
+    protected function generateTargetFile(): void
+    {
+        $sLang = $this->sourceLang;
+        $tLang = $this->targetLang;
+        $origFilePath = $this->sourceLangFile->path;
+        $targetFilePath = $this->projectDir.'/'.$this->targetLangFile->path;
+        $sTransArray = $this->sourceTransArray;
+        $tTransArray = $this->targetTransArray;
+
+        $messageAdapter = $this->framework->getAdapter(Message::class);
+
+        if (new ContaoXliffTransFileWriter($sLang, $tLang, $origFilePath, $targetFilePath, $sTransArray, $tTransArray)) {
+            $strMsg = $this->translator->trans(
+                'CONVERT_PHP_2_XLIFF.generateSourceSuccess',
+                [
+                    $this->targetLang,
+                    basename($this->sourceLangFile->path),
+                ],
+                'contao_default',
+            );
+            $messageAdapter->addInfo($strMsg);
+        } else {
+            $strMsg = $this->translator->trans(
+                'CONVERT_PHP_2_XLIFF.generateSourceFail',
+                [
+                    $this->targetLang,
+                    basename($this->sourceLangFile->path),
+                ],
+                'contao_default',
+            );
+            $messageAdapter->addError($strMsg);
         }
-
-        return $this->twig->render(
-            '@MarkocupicContaoPhp2Xliff/templ.xml.twig',
-            [
-                'original' => $this->sourceLangFile->path,
-                'source_lang' => $this->sourceLang,
-                'target_lang' => $this->targetLang,
-                'items' => $items,
-            ]
-        );
-    }
-
-    /**
-     * @param $strContent
-     *
-     * @throws \Exception
-     */
-    private function generateSourceFile($strContent): void
-    {
-        $strNewPath = \dirname($this->sourceLangFile->path).'/'.$this->sourceLangFile->filename.'.xlf';
-
-        $file = new File($strNewPath);
-        $file->truncate();
-        $file->append($strContent);
-        $file->close();
-    }
-
-    /**
-     * @param $strContent
-     *
-     * @throws \Exception
-     */
-    private function generateTarget($strContent): void
-    {
-        $strNewPath = \dirname($this->targetLangFile->path).'/'.$this->targetLangFile->filename.'.xlf';
-
-        $file = new File($strNewPath);
-        $file->truncate();
-        $file->append($strContent);
-        $file->close();
     }
 }

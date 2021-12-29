@@ -15,7 +15,7 @@ declare(strict_types=1);
 /*
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_php2xliff']['title_legend'] = 'Default settings';
+$GLOBALS['TL_LANG']['tl_php2xliff']['title_legend'] = 'XLIFF settings';
 
 /*
  * Operations
@@ -32,6 +32,7 @@ $GLOBALS['TL_LANG']['tl_php2xliff']['title'] = ['Title', 'Add a title please.'];
 $GLOBALS['TL_LANG']['tl_php2xliff']['sourceLanguage'] = ['Source language', 'The source language has to be configured in the project configuration. Check the README.md.'];
 $GLOBALS['TL_LANG']['tl_php2xliff']['targetLanguage'] = ['Target language', 'Select a target language.'];
 $GLOBALS['TL_LANG']['tl_php2xliff']['languagePath'] = ['Path to the language file directory (from ROOT)', 'Add the path to the language file directory (vendor/vendorname/bundlename/src/contao/languages).'];
+$GLOBALS['TL_LANG']['tl_php2xliff']['regenerateSourceTransFile'] = ['Regenerate source translation', 'If you select this option, each time you generate a xliff translation file, the source translation file will be generated as well.'];
 
 /*
  * Operations
