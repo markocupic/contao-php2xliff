@@ -64,11 +64,13 @@ class XliffFromPhp
         $this->targetTransArray = $parser->getFromFile($targetLangFile);
 
         // Do not generate the source lang twice
-        if ($regenerateSourceTransFile && $sourceLang !== $targetLang) {
+        if ($regenerateSourceTransFile || $sourceLang === $targetLang) {
             $this->regenerateSourceFile();
         }
 
-        $this->generateTargetFile();
+        if ($sourceLang !== $targetLang) {
+            $this->generateTargetFile();
+        }
     }
 
     protected function regenerateSourceFile(): void
@@ -82,7 +84,9 @@ class XliffFromPhp
 
         $messageAdapter = $this->framework->getAdapter(Message::class);
 
-        if (new ContaoXliffTransFileWriter($sLang, $tLang, $origFilePath, $targetFilePath, $sTransArray, $tTransArray)) {
+        $writer = new ContaoXliffTransFileWriter($sLang, $tLang, $origFilePath, $targetFilePath, $sTransArray, $tTransArray);
+
+        if ($writer->export()) {
             $strMsg = $this->translator->trans(
                 'CONVERT_PHP_2_XLIFF.regenerateSourceSuccess',
                 [
@@ -107,7 +111,6 @@ class XliffFromPhp
 
     protected function generateTargetFile(): void
     {
-
         $sLang = $this->sourceLang;
         $tLang = $this->targetLang;
         $origFilePath = $this->sourceLangFile->path;
@@ -118,6 +121,7 @@ class XliffFromPhp
         $messageAdapter = $this->framework->getAdapter(Message::class);
 
         $writer = new ContaoXliffTransFileWriter($sLang, $tLang, $origFilePath, $targetFilePath, $sTransArray, $tTransArray);
+
         if ($writer->export()) {
             $strMsg = $this->translator->trans(
                 'CONVERT_PHP_2_XLIFF.generateSourceSuccess',

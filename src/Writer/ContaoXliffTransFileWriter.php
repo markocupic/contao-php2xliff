@@ -83,7 +83,7 @@ class ContaoXliffTransFileWriter implements WriterInterface
         $bytes = false;
 
         if ($intAppendedItems) {
-            $pathNew = dirname($this->targetFilePath) . '/' . basename($this->targetFilePath, '.php') . '.xlf';
+            $pathNew = \dirname($this->targetFilePath).'/'.basename($this->targetFilePath, '.php').'.xlf';
             $bytes = file_put_contents($pathNew, $dom->saveXML());
         }
 
@@ -115,7 +115,10 @@ class ContaoXliffTransFileWriter implements WriterInterface
         $fileNode->appendChild(new \DOMAttr('source-language', $this->sourceLanguage));
         $fileNode->appendChild(new \DOMAttr('datatype', self::FILE_DATATYPE));
         $fileNode->appendChild(new \DOMAttr('original', $this->originalFilePath));
-        $fileNode->appendChild(new \DOMAttr('target-language', $this->targetLanguage));
+        if($this->sourceLanguage !== $this->targetLanguage)
+        {
+            $fileNode->appendChild(new \DOMAttr('target-language', $this->targetLanguage));
+        }
 
         return $fileNode->appendChild($dom->createElement('body'));
     }
