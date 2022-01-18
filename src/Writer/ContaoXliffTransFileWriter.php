@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Contao PHP language file to XLIFF.
+ * This file is part of Contao Php2Xliff.
  *
- * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -13,6 +13,8 @@ declare(strict_types=1);
  */
 
 namespace Markocupic\ContaoPhp2Xliff\Writer;
+
+use Markocupic\ContaoPhp2Xliff\String\XmlSanitizer;
 
 class ContaoXliffTransFileWriter implements WriterInterface
 {
@@ -50,13 +52,12 @@ class ContaoXliffTransFileWriter implements WriterInterface
 
         // Add translation items
         foreach (array_keys($this->arrSourceLangTranslations) as $translationId) {
-
             // Do not add empty or unsetted values
             if (!isset($this->arrSourceLangTranslations[$translationId])) {
                 continue;
             }
 
-            if ('' === trim((string)$this->arrSourceLangTranslations[$translationId])) {
+            if ('' === trim((string) $this->arrSourceLangTranslations[$translationId])) {
                 continue;
             }
 
@@ -64,7 +65,7 @@ class ContaoXliffTransFileWriter implements WriterInterface
                 continue;
             }
 
-            if ('' !== trim((string) $this->arrTargetLangTranslations[$translationId])) {
+            if ('' === trim((string) $this->arrTargetLangTranslations[$translationId])) {
                 continue;
             }
 
@@ -82,7 +83,8 @@ class ContaoXliffTransFileWriter implements WriterInterface
         $bytes = false;
 
         if ($intAppendedItems) {
-            $bytes = file_put_contents($this->targetFilePath, $dom->saveXML());
+            $pathNew = dirname($this->targetFilePath) . '/' . basename($this->targetFilePath, '.php') . '.xlf';
+            $bytes = file_put_contents($pathNew, $dom->saveXML());
         }
 
         return (bool) $bytes;
@@ -131,13 +133,13 @@ class ContaoXliffTransFileWriter implements WriterInterface
         $translationNode->appendChild(new \DOMAttr('id', $translationId));
 
         $source = $dom->createElement('source');
-        $source->textContent = $valueSource;
+        $source->textContent = XmlSanitizer::sanitize($valueSource);
         $translationNode->appendChild($source);
 
         if ($this->sourceLanguage !== $this->targetLanguage) {
             if ($valueTarget && '' !== $valueTarget) {
                 $target = $dom->createElement('target');
-                $target->textContent = $valueTarget;
+                $target->textContent = XmlSanitizer::sanitize($valueTarget);
                 $translationNode->appendChild($target);
             }
         }

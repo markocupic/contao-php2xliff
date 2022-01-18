@@ -16,3 +16,6 @@ services:
         resource: ../../
         exclude: ../../{DependencyInjection,Resources,Model,Writer}
 
+    Markocupic\ContaoPhp2Xliff\String\XmlSanitizer:
+        autowire: true
+        autoconfigure: true
