@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Contao PHP language file to XLIFF.
+ * This file is part of Contao Php2Xliff.
  *
- * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -89,26 +89,42 @@ $GLOBALS['TL_DCA']['tl_php2xliff'] = [
             'filter'    => true,
             'sorting'   => true,
             'flag'      => 1,
-            'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
+            'eval'      => [
+                'mandatory' => true,
+                'maxlength' => 255,
+                'tl_class'  => 'w50',
+            ],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'sourceLanguage'            => [
             'inputType' => 'text',
             'exclude'   => true,
-            'eval'      => ['readonly' => true, 'tl_class' => 'w50'],
+            'eval'      => [
+                'readonly' => true,
+                'tl_class' => 'w50',
+            ],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'targetLanguage'            => [
             'inputType' => 'select',
             'exclude'   => true,
-            'eval'      => ['includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'w50'],
+            'eval'      => [
+                'includeBlankOption' => true,
+                'submitOnChange'     => true,
+                'tl_class'           => 'w50',
+            ],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'languagePath'              => [
             'inputType' => 'text',
             'exclude'   => true,
-            'eval'      => ['mandatory' => true, 'maxlength' => 255, 'trailingSlash' => false, 'tl_class' => 'w50'],
-            'sql'       => "varchar(512) NOT NULL default 'vendor/vendorname/bundlename/src/contao/languages'",
+            'eval'      => [
+                'mandatory'     => true,
+                'maxlength'     => 255,
+                'trailingSlash' => false,
+                'tl_class'      => 'w50',
+            ],
+            'sql'       => "varchar(512) NOT NULL default 'vendor/#vendorname#/#bundlename#/src/Resources/contao/languages'",
         ],
         'regenerateSourceTransFile' => [
             'inputType' => 'checkbox',
