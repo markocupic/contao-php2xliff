@@ -112,11 +112,11 @@ class ContaoXliffTransFileWriter implements WriterInterface
         $xliff->appendChild(new \DOMAttr('version', self::XLIFF_VERSION));
 
         $fileNode = $xliff->appendChild($dom->createElement('file'));
-        $fileNode->appendChild(new \DOMAttr('source-language', $this->sourceLanguage));
         $fileNode->appendChild(new \DOMAttr('datatype', self::FILE_DATATYPE));
         $fileNode->appendChild(new \DOMAttr('original', $this->originalFilePath));
-        if($this->sourceLanguage !== $this->targetLanguage)
-        {
+        $fileNode->appendChild(new \DOMAttr('source-language', $this->sourceLanguage));
+
+        if ($this->sourceLanguage !== $this->targetLanguage) {
             $fileNode->appendChild(new \DOMAttr('target-language', $this->targetLanguage));
         }
 

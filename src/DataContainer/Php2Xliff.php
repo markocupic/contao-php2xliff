@@ -157,6 +157,20 @@ class Php2Xliff
             return [];
         }
 
+        if (false !== strpos( $php2xliffModel->languagePath, '#vendorname#/#bundlename#'))
+        {
+            Message::addInfo($this->translator->trans('CONVERT_PHP_2_XLIFF.addValidLanguagePathFolder', [], 'contao_default'));
+            return [];
+        }
+
+        if (!is_dir($this->projectDir . '/' . $php2xliffModel->languagePath))
+        {
+            Message::addInfo($this->translator->trans('CONVERT_PHP_2_XLIFF.addValidLanguagePathFolder', [], 'contao_default'));
+            return [];
+        }
+
+
+
         $path = rtrim($php2xliffModel->languagePath, '/');
 
         // Search for language folders

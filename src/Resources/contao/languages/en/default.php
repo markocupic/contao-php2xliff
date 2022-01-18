@@ -26,3 +26,4 @@ $GLOBALS['TL_LANG']['CONVERT_PHP_2_XLIFF']['generateSourceSuccess'] = 'Generated
 $GLOBALS['TL_LANG']['CONVERT_PHP_2_XLIFF']['generateSourceFail'] = 'Couldn\'t generate the %s .xlf version of "%s".';
 $GLOBALS['TL_LANG']['CONVERT_PHP_2_XLIFF']['sourceLangFileMissing'] = 'Skipped the %s translation of %s, because we cold not find the source lang file in "%s".';
 $GLOBALS['TL_LANG']['CONVERT_PHP_2_XLIFF']['noPHPLangFilesFound'] = 'Couldn\'t find any PHP language files to convert to the xliff format. Please check your folder- and language settings.';
+$GLOBALS['TL_LANG']['CONVERT_PHP_2_XLIFF']['addValidLanguagePathFolder'] = 'Add a valid language folder path, please';
