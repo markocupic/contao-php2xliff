@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Contao Php2Xliff.
+ * This file is part of Contao PHP2XLIFF Bundle.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
@@ -17,56 +17,56 @@ declare(strict_types=1);
  */
 $GLOBALS['TL_DCA']['tl_php2xliff'] = [
     // Config
-    'config'   => [
-        'dataContainer'    => 'Table',
+    'config' => [
+        'dataContainer' => 'Table',
         'enableVersioning' => true,
-        'sql'              => [
+        'sql' => [
             'keys' => [
                 'id' => 'primary',
             ],
         ],
     ],
-    'list'     => [
-        'sorting'           => [
-            'mode'        => 2,
-            'fields'      => ['title'],
-            'flag'        => 1,
+    'list' => [
+        'sorting' => [
+            'mode' => 2,
+            'fields' => ['title'],
+            'flag' => 1,
             'panelLayout' => 'filter;sort,search,limit',
         ],
-        'label'             => [
+        'label' => [
             'fields' => ['title'],
             'format' => '%s',
         ],
         'global_operations' => [
             'all' => [
-                'href'       => 'act=select',
-                'class'      => 'header_edit_all',
+                'href' => 'act=select',
+                'class' => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
             ],
         ],
-        'operations'        => [
-            'edit'             => [
+        'operations' => [
+            'edit' => [
                 'href' => 'act=edit',
                 'icon' => 'edit.svg',
             ],
-            'copy'             => [
+            'copy' => [
                 'href' => 'act=copy',
                 'icon' => 'copy.svg',
             ],
-            'delete'           => [
-                'href'       => 'act=delete',
-                'icon'       => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
+            'delete' => [
+                'href' => 'act=delete',
+                'icon' => 'delete.svg',
+                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
             ],
-            'show'             => [
-                'href'       => 'act=show',
-                'icon'       => 'show.svg',
+            'show' => [
+                'href' => 'act=show',
+                'icon' => 'show.svg',
                 'attributes' => 'style="margin-right:3px"',
             ],
             'convertphp2xliff' => [
-                'href'       => 'key=convertphp2xliff',
-                'icon'       => 'bundles/markocupiccontaophp2xliff/icons/convertphpxliff.svg',
-                'attributes' => 'data-icon="op-icon" onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['CONVERT_PHP_2_XLIFF']['convertphp2xliffConfirm'].'\'))return false;Backend.getScrollOffset()"',
+                'href' => 'key=convertphp2xliff',
+                'icon' => 'bundles/markocupiccontaophp2xliff/icons/convertphpxliff.svg',
+                'attributes' => 'data-icon="op-icon" onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['CONVERT_PHP_2_XLIFF']['convertphp2xliffConfirm'] ?? null).'\'))return false;Backend.getScrollOffset()"',
             ],
         ],
     ],
@@ -75,62 +75,62 @@ $GLOBALS['TL_DCA']['tl_php2xliff'] = [
         'default' => '{title_legend},title,sourceLanguage,targetLanguage,languagePath,regenerateSourceTransFile',
     ],
     // Fields
-    'fields'   => [
-        'id'                        => [
+    'fields' => [
+        'id' => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
-        'tstamp'                    => [
+        'tstamp' => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'title'                     => [
+        'title' => [
             'inputType' => 'text',
-            'exclude'   => true,
-            'search'    => true,
-            'filter'    => true,
-            'sorting'   => true,
-            'flag'      => 1,
-            'eval'      => [
+            'exclude' => true,
+            'search' => true,
+            'filter' => true,
+            'sorting' => true,
+            'flag' => 1,
+            'eval' => [
                 'mandatory' => true,
                 'maxlength' => 255,
-                'tl_class'  => 'w50',
+                'tl_class' => 'w50',
             ],
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql' => "varchar(255) NOT NULL default ''",
         ],
-        'sourceLanguage'            => [
+        'sourceLanguage' => [
             'inputType' => 'text',
-            'exclude'   => true,
-            'eval'      => [
+            'exclude' => true,
+            'eval' => [
                 'readonly' => true,
                 'tl_class' => 'w50',
             ],
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql' => "varchar(255) NOT NULL default ''",
         ],
-        'targetLanguage'            => [
+        'targetLanguage' => [
             'inputType' => 'select',
-            'exclude'   => true,
-            'eval'      => [
+            'exclude' => true,
+            'eval' => [
                 'includeBlankOption' => true,
-                'submitOnChange'     => true,
-                'tl_class'           => 'w50',
+                'submitOnChange' => true,
+                'tl_class' => 'w50',
             ],
-            'sql'       => "varchar(255) NOT NULL default ''",
+            'sql' => "varchar(255) NOT NULL default ''",
         ],
-        'languagePath'              => [
+        'languagePath' => [
             'inputType' => 'text',
-            'exclude'   => true,
-            'eval'      => [
-                'mandatory'     => true,
-                'maxlength'     => 255,
+            'exclude' => true,
+            'eval' => [
+                'mandatory' => true,
+                'maxlength' => 255,
                 'trailingSlash' => false,
-                'tl_class'      => 'w50',
+                'tl_class' => 'w50',
             ],
-            'sql'       => "varchar(512) NOT NULL default 'vendor/#vendorname#/#bundlename#/src/Resources/contao/languages'",
+            'sql' => "varchar(512) NOT NULL default 'vendor/#vendorname#/#bundlename#/src/Resources/contao/languages'",
         ],
         'regenerateSourceTransFile' => [
             'inputType' => 'checkbox',
-            'exclude'   => true,
-            'eval'      => ['tl_class' => 'w50'],
-            'sql'       => "char(1) NOT NULL default '1'",
+            'exclude' => true,
+            'eval' => ['tl_class' => 'w50'],
+            'sql' => "char(1) NOT NULL default '1'",
         ],
     ],
 ];

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Contao Php2Xliff.
+ * This file is part of Contao PHP2XLIFF Bundle.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
@@ -157,19 +157,17 @@ class Php2Xliff
             return [];
         }
 
-        if (false !== strpos( $php2xliffModel->languagePath, '#vendorname#/#bundlename#'))
-        {
+        if (false !== strpos($php2xliffModel->languagePath, '#vendorname#/#bundlename#')) {
             Message::addInfo($this->translator->trans('CONVERT_PHP_2_XLIFF.addValidLanguagePathFolder', [], 'contao_default'));
+
             return [];
         }
 
-        if (!is_dir($this->projectDir . '/' . $php2xliffModel->languagePath))
-        {
+        if (!is_dir($this->projectDir.'/'.$php2xliffModel->languagePath)) {
             Message::addInfo($this->translator->trans('CONVERT_PHP_2_XLIFF.addValidLanguagePathFolder', [], 'contao_default'));
+
             return [];
         }
-
-
 
         $path = rtrim($php2xliffModel->languagePath, '/');
 
