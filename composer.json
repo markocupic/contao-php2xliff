@@ -24,26 +24,32 @@
     "require": {
         "php": "^8.1",
         "contao/core-bundle": "^4.12 || ^5.0",
-        "codefog/contao-haste": "^4.20"
+        "codefog/contao-haste": "^5.0"
     },
     "require-dev": {
         "contao/easy-coding-standard": "^5.0",
         "contao/manager-plugin": "^2.3.1",
-        "contao/test-case": "^4.6",
+        "contao/test-case": "^4.6 || ^5.0",
         "phpunit/phpunit": "^9.3",
         "symfony/phpunit-bridge": "^5.4"
     },
     "autoload": {
         "psr-4": {
             "Markocupic\\ContaoPhp2Xliff\\": "src/"
-        },
-        "exclude-from-classmap": [
-            "src/Resources/contao/config",
-            "src/Resources/contao/dca",
-            "src/Resources/contao/languages"
-        ]
+        }
     },
     "extra": {
         "contao-manager-plugin": "Markocupic\\ContaoPhp2Xliff\\ContaoManager\\Plugin"
+    },
+    "config": {
+        "allow-plugins": {
+            "contao/manager-plugin": false,
+            "contao-components/installer": false,
+            "contao-community-alliance/composer-plugin": true
+        }
+    },
+    "scripts": {
+        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ tests/ --config tools/ecs/config.php --fix --ansi",
+        "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
     }
 }

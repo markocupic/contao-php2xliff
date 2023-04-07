@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * This file is part of Contao PHP language file to XLIFF.
+ * This file is part of Contao PHP2XLIFF Bundle.
  *
- * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/contao-php2xliff
  */
-declare(strict_types=1);
 
 namespace Markocupic\ContaoPhp2Xliff\Tests\ContaoManager;
 
@@ -20,15 +21,10 @@ use Contao\TestCase\ContaoTestCase;
 use Markocupic\ContaoPhp2Xliff\ContaoManager\Plugin;
 use Markocupic\ContaoPhp2Xliff\MarkocupicContaoPhp2Xliff;
 
-/**
- * Class PluginTest
- *
- * @package Markocupic\ContaoPhp2Xliff\Tests\ContaoManager
- */
 class PluginTest extends ContaoTestCase
 {
     /**
-     * Test Contao manager plugin class instantiation
+     * Test Contao manager plugin class instantiation.
      */
     public function testInstantiation(): void
     {
@@ -36,7 +32,7 @@ class PluginTest extends ContaoTestCase
     }
 
     /**
-     * Test returns the bundles
+     * Test returns the bundles.
      */
     public function testGetBundles(): void
     {
@@ -50,5 +46,4 @@ class PluginTest extends ContaoTestCase
         $this->assertSame(MarkocupicContaoPhp2Xliff::class, $bundles[0]->getName());
         $this->assertSame([ContaoCoreBundle::class], $bundles[0]->getLoadAfter());
     }
-
 }

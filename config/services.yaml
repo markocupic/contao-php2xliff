@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+        bind:
+            $projectDir: '%kernel.project_dir%'
+            $php2XliffSourceLang: '%markocupic_contao_php2xliff.sourceLanguage%'
+
+    Markocupic\ContaoPhp2Xliff\:
+        resource: ../src/
+        exclude: ../src/{DependencyInjection,Model,Writer}
