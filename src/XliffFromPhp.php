@@ -23,9 +23,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class XliffFromPhp
 {
-    private ContaoFramework $framework;
-    private TranslatorInterface $translator;
-    private string $projectDir;
     private array|null $targetTransArray;
     private array|null $sourceTransArray;
     private File|null $sourceLangFile;
@@ -33,11 +30,11 @@ class XliffFromPhp
     private string|null $sourceLang;
     private string|null $targetLang;
 
-    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, string $projectDir)
-    {
-        $this->framework = $framework;
-        $this->translator = $translator;
-        $this->projectDir = $projectDir;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly TranslatorInterface $translator,
+        private readonly string $projectDir,
+    ) {
     }
 
     /**
