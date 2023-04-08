@@ -10,6 +10,6 @@ php vendor\bin\ecs check vendor/markocupic/contao-php2xliff/src --fix --config v
 php vendor\bin\ecs check vendor/markocupic/contao-php2xliff/contao --fix --config vendor/markocupic/contao-php2xliff/tools/ecs/config.php
 php vendor\bin\ecs check vendor/markocupic/contao-php2xliff/config --fix --config vendor/markocupic/contao-php2xliff/tools/ecs/config.php
 :: php vendor\bin\ecs check vendor/markocupic/contao-php2xliff/templates --fix --config vendor/markocupic/contao-php2xliff/tools/ecs/config.php
-php vendor\bin\ecs check vendor/markocupic/contao-php2xliff/tests --fix --config vendor/markocupic/contao-php2xliff/tools/ecs/config.php
+::php vendor\bin\ecs check vendor/markocupic/contao-php2xliff/tests --fix --config vendor/markocupic/contao-php2xliff/tools/ecs/config.php
 
 

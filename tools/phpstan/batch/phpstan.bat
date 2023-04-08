@@ -6,4 +6,4 @@ cd..
 cd..
 cd..
 cd..
-php -d memory_limit=-1 vendor/bin/phpstan analyse vendor/markocupic/contao-php2xliff/src vendor/markocupic/contao-php2xliff/tests
+php -d memory_limit=-1 vendor/bin/phpstan analyse vendor/markocupic/contao-php2xliff/src

@@ -20,12 +20,16 @@ class PhpParser
 {
     public const PHP2XLIFF_LANG_KEY = 'Php2XliffLangKey';
     private string $content = '';
+    /** @var array<string>|null */
     private array|null $langArray = null;
+    /** @var array<string>|null */
     private array|null $dotKeyLangArray = null;
     private string|null $clonePath = null;
 
     /**
      * @throws \Exception
+     *
+     * @return array<string>
      */
     public function getFromFile(File $file): array
     {
@@ -78,6 +82,8 @@ class PhpParser
 
     /**
      * Return the dot-key array.
+     *
+     * @return array<string>
      */
     private function getDotKeyArray(): array
     {

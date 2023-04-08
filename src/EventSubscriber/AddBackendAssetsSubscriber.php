@@ -35,7 +35,7 @@ class AddBackendAssetsSubscriber implements EventSubscriberInterface
     {
         $request = $e->getRequest();
 
-        if ($request && $this->scopeMatcher->isBackendRequest($request)) {
+        if ($this->scopeMatcher->isBackendRequest($request)) {
             // CSS
             if ('php2xliff' === $request->query->get('do')) {
                 $GLOBALS['TL_CSS'][] = 'bundles/markocupiccontaophp2xliff/css/styles.css';

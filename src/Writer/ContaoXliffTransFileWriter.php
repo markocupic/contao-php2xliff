@@ -26,7 +26,9 @@ class ContaoXliffTransFileWriter implements WriterInterface
         protected string $targetLanguage,
         protected string $originalFilePath,
         protected string $targetFilePath,
+        /** @var array<string> */
         protected array $arrSourceLangTranslations,
+        /** @var array<string> */
         protected array $arrTargetLangTranslations,
     ) {
     }
@@ -114,9 +116,14 @@ class ContaoXliffTransFileWriter implements WriterInterface
      *
      * @throws \DOMException
      */
-    protected function createTranslationNode(\DOMDocument $dom, string $translationId, string $valueSource, string|null $valueTarget): \DOMElement|false
+    protected function createTranslationNode(\DOMDocument $dom, string $translationId, string $valueSource, string|null $valueTarget): \DOMNode
     {
         $translationNode = $dom->createElement('trans-unit');
+
+        if (false === $translationNode) {
+            throw new \Exception('Could not create the trans-unit node.');
+        }
+
         $translationNode->appendChild(new \DOMAttr('id', $translationId));
 
         $source = $dom->createElement('source');

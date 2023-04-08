@@ -23,7 +23,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class XliffFromPhp
 {
+    /**
+     * @var array<string>|null
+     */
     private array|null $targetTransArray;
+
+    /**
+     * @var array<string>|null
+     */
     private array|null $sourceTransArray;
     private File|null $sourceLangFile;
     private File|null $targetLangFile;
